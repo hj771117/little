@@ -1,3 +1,27 @@
+; ==================== OpenClash 2025 终极版 INI（无台湾影视）===================
+; 带国旗 + 全部故转 + LightGBM 智能组 + 超稳定
+; 兼容 Smart 内核 & Mihomo 内核 | 更新：2025-11-29
+
+enable-emoji: true
+prepend-emoji: true
+rename-rule:
+  - "|@ @"
+
+emoji-rule:
+  - "香港|广港|HK|Hong Kong|🇭🇰"
+  - "广台|台湾|台北|台|TW|Tai Wan|TaiWan|Taiwan|Wan|🇹🇼|🇨🇳|"
+  - "广日|日本|JP|川日|东京|成田|大阪|泉日|埼玉|沪日|深日|Japan🇯🇵"
+  - "广新|新加坡|SG|SIN|SGP|坡|狮城|Singapore🇸🇬"
+  - "广韩|韩国|韓國|KR|首尔|春川|🇰🇷"
+  - "广美|美国|US|LAX|SJC|SEA美国|纽约|波特兰|达拉斯|俄勒|凤凰城|费利蒙|洛杉|圣何塞|圣克拉|西雅|芝加哥|United States|🇺🇸|"
+  - "英国|UK|England|Britain|London|🇬🇧"
+  - "德国|DE|Germany|法兰克福|🇩🇪"
+  - "加拿大|CA|Canada|蒙特利尔|多伦多|🇨🇦"
+  - "澳洲|AU|Australia|悉尼|🇦🇺"
+  - "土耳其|TR|Turkey|🇹🇷"
+  - "阿根廷|AR|Argentina|🇦🇷"
+  - "节点|Node|Proxy|Relay|🇺🇳"
+
 # ========================
 # Clash-ALL 优化配置
 # ========================
@@ -301,7 +325,7 @@ proxy-groups:
   - name: 台湾-手选
     type: select
     include-all: true
-    filter: "(?=.*(广台|台湾|台灣|TW|Tai Wan|🇹🇼|🇨🇳|TaiWan|Taiwan)).*$"
+    filter: "(?=.*(广台|台湾|台北|台|TW|Tai Wan|🇹🇼|🇨🇳|TaiWan|Taiwan)).*$"
   - name: 台湾-智选
     type: smart
     include-all: true
@@ -309,7 +333,7 @@ proxy-groups:
     uselightgbm: true
     collectdata: true
     interval: 300
-    filter: "(?=.*(广台|台湾|台灣|TW|Tai Wan|🇹🇼|🇨🇳|TaiWan|Taiwan)).*$"
+    filter: "(?=.*(广台|台湾||台北|台|TW|Tai Wan|🇹🇼|🇨🇳|TaiWan|Taiwan)).*$"
 
   # 日本组
 
@@ -323,7 +347,7 @@ proxy-groups:
   - name: 日本-手选
     type: select
     include-all: true
-    filter: "(?=.*(广日|日本|JP|川日|东京|大阪|泉日|埼玉|沪日|深日|🇯🇵|Japan)).*$"
+    filter: "(?=.*(广日|日本|JP|川日|东京|成田|大阪|泉日|埼玉|沪日|深日|🇯🇵|Japan)).*$"
   - name: 日本-智选
     type: smart
     include-all: true
@@ -331,7 +355,7 @@ proxy-groups:
     uselightgbm: true
     collectdata: true
     interval: 300
-    filter: "(?=.*(广日|日本|JP|川日|东京|大阪|泉日|埼玉|沪日|深日|🇯🇵|Japan)).*$"
+    filter: "(?=.*(广日|日本|JP|川日|东京|成田|大阪|泉日|埼玉|沪日|深日|🇯🇵|Japan)).*$"
 
   # 新加坡组
 
@@ -345,7 +369,7 @@ proxy-groups:
   - name: 新加坡-手选
     type: select
     include-all: true
-    filter: "(?=.*(广新|新加坡|SG|坡|狮城|🇸🇬|Singapore)).*$"
+    filter: "(?=.*(广新|新加坡|SG|SIN|SGP|坡|狮城|🇸🇬|Singapore)).*$"
   - name: 新加坡-智选
     type: smart
     include-all: true
@@ -353,7 +377,7 @@ proxy-groups:
     uselightgbm: true
     collectdata: true
     interval: 300
-    filter: "(?=.*(广新|新加坡|SG|坡|狮城|🇸🇬|Singapore)).*$"
+    filter: "(?=.*(广新|新加坡|SG|SIN|SGP|坡|狮城|🇸🇬|Singapore)).*$"
 
   # 韩国组
 
@@ -389,7 +413,7 @@ proxy-groups:
   - name: 美国-手选
     type: select
     include-all: true
-    filter: "(?=.*(广美|US|美国|纽约|波特兰|达拉斯|俄勒|凤凰城|费利蒙|洛杉|圣何塞|圣克拉|西雅|芝加|🇺🇸|United States)).*$"
+    filter: "(?=.*(广美|US|LAX|SJC|SEA美国|纽约|波特兰|达拉斯|俄勒|凤凰城|费利蒙|洛杉|圣何塞|圣克拉|西雅|芝加哥|🇺🇸|United States)).*$"
   - name: 美国-智选
     type: smart
     include-all: true
@@ -397,7 +421,7 @@ proxy-groups:
     uselightgbm: true
     collectdata: true
     interval: 300
-    filter: "(?=.*(广美|US|美国|纽约|波特兰|达拉斯|俄勒|凤凰城|费利蒙|洛杉|圣何塞|圣克拉|西雅|芝加|🇺🇸|United States)).*$"
+    filter: "(?=.*(广美|US|LAX|SJC|SEA美国|纽约|波特兰|达拉斯|俄勒|凤凰城|费利蒙|洛杉|圣何塞|圣克拉|西雅|芝加哥|🇺🇸|United States)).*$"
 
   # 英国组
 
@@ -553,5 +577,6 @@ rule-providers:
   Google / Domain: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/google.mrs"}  
   Google / IP: {<<: *ip, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geoip/google.mrs"}
 # GateFireWall / Domain: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/gfw.mrs"}
+
 
 
