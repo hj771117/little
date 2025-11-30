@@ -9,7 +9,7 @@ rename-rule:
 emoji-rule:
   - "香港|广港|HK|Hong Kong|🇭🇰"
   - "广台|台湾|台北|台|TW|Tai Wan|TaiWan|Taiwan|Wan|🇹🇼|🇨🇳"
-  - "广日|日本|JP|川日|东京|成田|大阪|泉日|埼玉|沪日|深日|Japan|🇯🇵"
+  - "广日|日本|JP|川日|jp|东京|成田|大阪|泉日|埼玉|沪日|深日|Japan|🇯🇵"
   - "广新|新加坡|SG|SIN|SGP|坡|狮城|Singapore|🇸🇬"
   - "广韩|韩国|韓國|KR|首尔|春川|🇰🇷"
   - "广美|美国|US|LAX|SJC|SEA美国|纽约|波特兰|达拉斯|俄勒|凤凰城|费利蒙|洛杉|圣何塞|圣克拉|西雅图|芝加哥|United States|🇺🇸"
@@ -383,3 +383,4 @@ rule-providers:
   Google-IP: { <<: *ip, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geoip/google.mrs" }
 
 # 文件结束
+
