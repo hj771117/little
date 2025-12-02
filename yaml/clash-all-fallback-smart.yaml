@@ -1,7 +1,6 @@
-# ==================== OpenClash — Smart 内核终极重写版（mrs 优化 / 校验通过） ====================
-# 说明：为 x86 N5105 优化，启用 IPv6，Fake-IP 增强，TUN(gvisor)，台湾影视(台->港->日)fallback。
-# 所有 rule-providers 已升级为 mrs/raw 可下载格式或兼容格式；修正了拼写与 raw 域名。
-# 生成时间：2025-12-01
+# ==================== OpenClash — Smart 内核终极稳定版（2025.12.02 优化）===================
+# 核心优化：大幅降低 Smart 切换频率 + 台湾影视 url-test + gvisor 丢包优化 + 健康检查更稳
+# 生成时间：2025-12-02
 
 enable-emoji: true
 prepend-emoji: true
@@ -16,13 +15,14 @@ proxy-providers:
     interval: 21600
     health-check:
       enable: true
-      url: https://www.gstatic.com/generate_204
-      interval: 300
+      url: https://cp.cloudflare.com/generate_204
+      interval: 600
+      timeout: 5000
+      expected-status: 204
     update-timer:
       - "0 */6 * * *"
-    lazy: false
+    lazy: true
 
-# minimal placeholders; actual proxies are populated by subscription
 proxies:
   - { name: 直连, type: direct }
   - { name: 拒绝, type: reject }
@@ -70,7 +70,7 @@ dns:
     - +.localdomain
   disable-unbound: false
 
-# -------------------- TUN（gvisor） --------------------
+# -------------------- TUN（gvisor 稳定优化） --------------------
 tun:
   enable: true
   stack: gvisor
@@ -82,23 +82,30 @@ tun:
   strict-route: false
   udp: true
   udp-relay: true
+  mtu: 9000
+  gso: true
 
 profile:
   store-selected: true
   store-fake-ip: true
 
-# -------------------- 模板与默认组 --------------------
+# -------------------- Smart 内核保守参数（核心稳定补丁） --------------------
 smart-default: &smart-default
   type: smart
   include-all: true
   uselightgbm: true
   collectdata: true
-  interval: 300
-  concurrency: 5
+  interval: 600  # 增大间隔，减少切换频率
+  concurrency: 4  # 限制并发数，降低过载风险
+  tolerance: 80  # 增加容忍度，减少切换过于频繁
   latency-check:
     enable: true
-    url: https://www.gstatic.com/generate_204
-    interval: 180
+    url: https://cp.cloudflare.com/generate_204
+    interval: 300  # 延长延迟检查的间隔，避免频繁波动
+    timeout: 5000
+    tolerance: 100  # 提高容忍度，减少小波动影响
+    expected-status: 204
+  disable-udp: false
 
 default: &default
   type: select
@@ -116,7 +123,7 @@ default: &default
     - 其他-故转
     - 拒绝
 
-# -------------------- Proxy Groups（含台湾影视 fallback） --------------------
+# -------------------- Proxy Groups --------------------
 proxy-groups:
   - { name: ChatGPT, <<: *default }
   - { name: Gemini, <<: *default }
@@ -150,11 +157,20 @@ proxy-groups:
   - { name: 国内, <<: *default }
   - { name: 其他, <<: *default }
 
+  # 台湾影视改为更稳定的 url-test
   - name: 台湾影视
-    type: fallback
-    interval: 300
-    lazy: false
-    proxies: [台湾-智选, 台湾-手选, 香港-智选, 香港-手选, 日本-智选, 日本-手选, 直连, 拒绝]
+    type: url-test
+    url: https://cp.cloudflare.com/generate_204
+    interval: 600
+    tolerance: 100
+    lazy: true
+    proxies:
+      - 台湾-智选
+      - 台湾-手选
+      - 香港-智选
+      - 香港-手选
+      - 日本-智选
+      - 日本-手选
 
   - name: 所有-手选
     type: select
@@ -163,7 +179,6 @@ proxy-groups:
 
   - name: 所有-智选
     <<: *smart-default
-    name: 所有-智选
     filter: "^((?!(直连|拒绝)).)*$"
 
   - name: 香港-故转
@@ -179,7 +194,6 @@ proxy-groups:
 
   - name: 香港-智选
     <<: *smart-default
-    name: 香港-智选
     filter: "(?=.*(广港|香港|HK|Hong Kong|🇭🇰)).*$"
 
   - name: 台湾-故转
@@ -195,7 +209,6 @@ proxy-groups:
 
   - name: 台湾-智选
     <<: *smart-default
-    name: 台湾-智选
     filter: "(?=.*(广台|台湾|台北|台|TW|Tai Wan|🇹🇼)).*$"
 
   - name: 日本-故转
@@ -211,7 +224,6 @@ proxy-groups:
 
   - name: 日本-智选
     <<: *smart-default
-    name: 日本-智选
     filter: "(?=.*(广日|日本|JP|东京|大阪|🇯🇵)).*$"
 
   - name: 新加坡-故转
@@ -227,7 +239,6 @@ proxy-groups:
 
   - name: 新加坡-智选
     <<: *smart-default
-    name: 新加坡-智选
     filter: "(?=.*(广新|新加坡|SG|SIN|SGP|🇸🇬)).*$"
 
   - name: 韩国-故转
@@ -243,7 +254,6 @@ proxy-groups:
 
   - name: 韩国-智选
     <<: *smart-default
-    name: 韩国-智选
     filter: "(?=.*(广韩|韩国|KR|首尔|🇰🇷)).*$"
 
   - name: 美国-故转
@@ -259,7 +269,6 @@ proxy-groups:
 
   - name: 美国-智选
     <<: *smart-default
-    name: 美国-智选
     filter: "(?=.*(广美|美国|US|纽约|🇺🇸)).*$"
 
   - name: 英国-故转
@@ -275,7 +284,6 @@ proxy-groups:
 
   - name: 英国-智选
     <<: *smart-default
-    name: 英国-智选
     filter: "(?=.*(英国|UK|伦敦|🇬🇧)).*$"
 
   - name: 其他-故转
@@ -291,10 +299,18 @@ proxy-groups:
 
   - name: 其他-智选
     <<: *smart-default
-    name: 其他-智选
     filter: "^((?!(直连|拒绝|广港|香港|HK|广台|台湾|TW|广日|日本|JP|广新|新加坡|SG|广韩|韩国|KR|广美|美国|US|英国|UK)).)*$"
 
-# -------------------- 规则（保持并修正） --------------------
+  # 保底组，防止正则漏网
+  - name: 漏网之鱼
+    type: select
+    proxies:
+      - 所有-智选
+      - 直连
+    include-all: true
+    filter: ".*"
+
+# -------------------- 规则（保持最新） --------------------
 rules:
   - RULE-SET,TEST-Domain,Test
   - RULE-SET,Block-Domain,Block
@@ -331,7 +347,7 @@ rules:
   - RULE-SET,UBI-Domain,Games
   - MATCH,其他
 
-# -------------------- rule-providers（全部升级为 raw / mrs 可下载地址优先） --------------------
+# -------------------- rule-providers（全部 mrs/raw 最新地址） --------------------
 rule-anchor:
   ip: &ip { type: http, interval: 86400, behavior: ipcidr, format: mrs }
   domain: &domain { type: http, interval: 86400, behavior: domain, format: mrs }
